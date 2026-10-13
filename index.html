@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tower Defense 3D</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game">
+
+  <header class="hud">
+    <div class="hud__item"><span class="ico">💰</span><span id="money">150</span></div>
+    <div class="hud__item"><span class="ico">❤️</span><span id="lives">20</span></div>
+    <div class="hud__item"><span class="ico">🌊</span><span id="wave">0</span></div>
+    <div class="hud__item"><span class="ico">⭐</span><span id="score">0</span></div>
+    <div class="hud__item hud__item--best"><span class="ico">🏆</span><span id="best">0</span></div>
+  </header>
+
+  <div class="stage">
+    <div id="canvas3d"></div>
+
+    <div id="overlay" class="overlay">
+      <div class="overlay__panel">
+        <h1 id="overlayTitle">Tower Defense 3D</h1>
+        <p id="overlayText">Стройте башни и не дайте врагам дойти до замка!</p>
+        <button id="overlayBtn" class="btn btn--primary">Играть</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="shop">
+    <button class="tower" data-type="arrow">
+      <span class="tower__name">Стрелок</span>
+      <span class="tower__cost">50</span>
+    </button>
+    <button class="tower" data-type="cannon">
+      <span class="tower__name">Пушка</span>
+      <span class="tower__cost">100</span>
+    </button>
+    <button class="tower" data-type="frost">
+      <span class="tower__name">Мороз</span>
+      <span class="tower__cost">75</span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <button id="muteBtn" class="btn" title="Звук">🔊</button>
+    <button id="speedBtn" class="btn">x1</button>
+    <button id="waveBtn" class="btn btn--primary">Волна 1</button>
+  </footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

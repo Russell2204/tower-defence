@@ -1,0 +1,208 @@
+/* ============================================================
+   Tower Defense 3D — style.css
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0f0a;
+  color: #e6efe6;
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body { display: block; }
+
+.game {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, #12180f, #0a0f0a);
+  border-bottom: 1px solid #1e2a1e;
+  box-shadow: 0 2px 8px rgba(0,0,0,.5);
+  z-index: 10;
+}
+
+.hud__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: linear-gradient(180deg, #1c261a, #131a12);
+  border: 1px solid #2a3a2b;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: .3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 1px 2px rgba(0,0,0,.4);
+}
+
+.hud__item .ico { font-size: 15px; }
+
+.hud__item--best {
+  margin-left: auto;
+  color: #ffd76a;
+  border-color: #4a3f1e;
+  background: linear-gradient(180deg, #2a220f, #1a1509);
+  text-shadow: 0 0 8px rgba(255,215,106,.35);
+}
+
+/* ---------- Stage ---------- */
+.stage {
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 0;
+  background: #0a0f0a;
+  overflow: hidden;
+}
+
+#canvas3d {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+}
+
+#canvas3d canvas {
+  display: block;
+}
+
+/* ---------- Overlay ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: rgba(6, 10, 7, .82);
+  backdrop-filter: blur(3px);
+  line-height: 1.45;
+  transition: opacity .18s ease;
+  z-index: 5;
+}
+
+.overlay.hidden { display: none; }
+
+.overlay__panel { max-width: 520px; }
+
+.overlay__panel h1 {
+  margin: 0 0 10px;
+  font-size: 40px;
+  letter-spacing: .5px;
+  color: #8fe08f;
+  text-shadow: 0 0 24px rgba(143,224,143,.35);
+}
+
+.overlay__panel p {
+  margin: 0 0 22px;
+  font-size: 16px;
+  color: #b9c9b9;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #33452f;
+  background: linear-gradient(180deg, #243120, #182117);
+  color: #d7e6d7;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .08s ease, background .15s ease, border-color .15s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 5px rgba(0,0,0,.35);
+}
+
+.btn:hover { background: linear-gradient(180deg, #2e3f29, #1e2a1c); border-color: #4a6344; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .45; cursor: default; transform: none; }
+
+.btn--primary {
+  background: linear-gradient(180deg, #57b45e, #2c6b31);
+  border-color: #7bd182;
+  color: #f4fff4;
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+.btn--primary:hover { background: linear-gradient(180deg, #69c670, #327a38); }
+.btn--primary:disabled { background: #24331f; border-color: #33452f; color: #7d8f7d; text-shadow: none; }
+
+.btn.muted {
+  color: #e07070;
+  border-color: #4a2525;
+  background: linear-gradient(180deg, #2a1a1a, #1a1010);
+}
+
+/* ---------- Shop ---------- */
+.shop {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, #0a0f0a, #12180f);
+  border-top: 1px solid #1e2a1e;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.5);
+  z-index: 10;
+}
+
+.spacer { flex: 1; }
+
+.tower {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 108px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #2a3a2b;
+  background: linear-gradient(180deg, #1c261a, #131a12);
+  color: #d7e6d7;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, transform .08s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 2px 5px rgba(0,0,0,.35);
+}
+
+.tower:hover { background: linear-gradient(180deg, #253322, #182117); }
+.tower:active { transform: translateY(1px); }
+
+.tower__name { font-size: 14px; font-weight: 700; }
+.tower__cost { font-size: 12px; color: #9fb79f; }
+
+.tower__cost::before { content: "💰 "; }
+
+.tower.active {
+  border-color: #8fe08f;
+  background: linear-gradient(180deg, #294023, #1a2917);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 0 2px rgba(143,224,143,.18),
+    0 0 18px rgba(143,224,143,.22);
+}
+
+.tower.poor .tower__cost { color: #e07070; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 640px) {
+  .hud__item { font-size: 13px; padding: 5px 9px; }
+  .tower { min-width: 0; flex: 1; padding: 8px 10px; }
+  .overlay__panel h1 { font-size: 26px; }
+}
