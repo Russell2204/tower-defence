@@ -542,7 +542,7 @@ function buildTowerMaterials() {
 let scene, camera, renderer, clock;
 let hoverMarker, rangeMarker, groundPlaneForRay;
 let sunLight, hemiLight, snowPoints, snowData;
-const mapObjects = []; /* объекты, подлежащие удалению при смене карты */
+const mapObjects = [];
 const particlePool = [];
 const activeParticles = [];
 
@@ -614,7 +614,6 @@ function setupThree() {
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.22));
 
-  /* Собираем карту */
   buildMap();
 
   const planeGeo = new THREE.PlaneGeometry(WORLD_W, WORLD_D);
@@ -646,14 +645,12 @@ function setupThree() {
    ПОСТРОЕНИЕ/ПЕРЕСТРОЕНИЕ КАРТЫ
    ============================================================ */
 function buildMap() {
-  /* Убираем старые объекты карты */
   for (const o of mapObjects) {
     scene.remove(o);
     disposeObj(o);
   }
   mapObjects.length = 0;
 
-  /* Убираем старый снег, если был */
   if (snowPoints) {
     scene.remove(snowPoints);
     snowPoints.geometry.dispose();
@@ -664,14 +661,12 @@ function buildMap() {
 
   const isWinter = mapMode === 'winter';
 
-  /* Фон и туман */
   const skyColor = isWinter ? 0xc8d8e8 : 0x9cc0e0;
   scene.background = new THREE.Color(skyColor);
   scene.fog.color.setHex(skyColor);
   scene.fog.near = isWinter ? 45 : 60;
   scene.fog.far  = isWinter ? 110 : 120;
 
-  /* Свет */
   if (isWinter) {
     hemiLight.color.setHex(0xdce8f4);
     hemiLight.groundColor.setHex(0x8fa0b8);
@@ -687,7 +682,7 @@ function buildMap() {
   }
 
   mapObjects.push(createGround());
-  createPath(); /* добавляет напрямую в сцену, но мы их сохраняем в mapObjects */
+  createPath();
   createDecorations();
   mapObjects.push(createSpawnPortal());
   mapObjects.push(createCastle());
@@ -748,7 +743,7 @@ function createGrassTexture() {
 /* ---------- Тропа ---------- */
 function createPath() {
   const isWinter = mapMode === 'winter';
-  const tex = isWinter ? makeIcePathTexture() : makeDirtTexture();
+  const tex = isWinter ? makeIcePathTexture() : createDirtTexture();
   const mat = new THREE.MeshStandardMaterial({
     map: tex,
     roughness: isWinter ? 0.25 : 0.9,
@@ -829,7 +824,6 @@ function createDecorations() {
 
     if (isWinter) {
       if (roll < 0.35) {
-        /* Снеговик */
         const g = new THREE.Group();
         const s1 = new THREE.Mesh(new THREE.SphereGeometry(0.28, 14, 12), snowBushMat);
         s1.position.y = 0.28; s1.castShadow = true; g.add(s1);
@@ -838,13 +832,11 @@ function createDecorations() {
         const s3 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 12), snowBushMat);
         s3.position.y = 1.0; s3.castShadow = true; g.add(s3);
 
-        /* Глазки */
         const eyeMat = new THREE.MeshBasicMaterial({ color: 0x101015 });
         const eyeGeo = new THREE.SphereGeometry(0.025, 6, 5);
         const e1 = new THREE.Mesh(eyeGeo, eyeMat); e1.position.set(0.05, 1.04, 0.14); g.add(e1);
         const e2 = new THREE.Mesh(eyeGeo, eyeMat); e2.position.set(-0.05, 1.04, 0.14); g.add(e2);
 
-        /* Нос-морковка */
         const carrot = new THREE.Mesh(
           new THREE.ConeGeometry(0.04, 0.14, 6),
           new THREE.MeshStandardMaterial({ color: 0xff7020, roughness: 0.7 })
@@ -853,14 +845,12 @@ function createDecorations() {
         carrot.position.set(0, 0.99, 0.2);
         g.add(carrot);
 
-        /* Пуговицы */
         for (let k = 0; k < 2; k++) {
           const btn = new THREE.Mesh(eyeGeo, eyeMat);
           btn.position.set(0, 0.72 - k * 0.12, 0.2);
           g.add(btn);
         }
 
-        /* Ведро на голове */
         const hat = new THREE.Mesh(
           new THREE.CylinderGeometry(0.13, 0.14, 0.14, 10),
           new THREE.MeshStandardMaterial({ color: 0x6a7080, metalness: 0.6, roughness: 0.4 })
@@ -875,37 +865,24 @@ function createDecorations() {
         scene.add(g);
         mapObjects.push(g);
       } else if (roll < 0.65) {
-        /* Мёртвое дерево */
         const g = new THREE.Group();
         const trunkH = 0.8 + Math.random() * 0.6;
-        const trunk = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.06, 0.1, trunkH, 6),
-          trunkMat
-        );
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, trunkH, 6), trunkMat);
         trunk.position.y = trunkH / 2;
         trunk.castShadow = true;
         g.add(trunk);
 
-        /* Ветви */
         for (let k = 0; k < 4; k++) {
           const a = Math.random() * Math.PI * 2;
           const len = 0.25 + Math.random() * 0.3;
-          const branch = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.025, 0.035, len, 5),
-            trunkMat
-          );
-          branch.position.set(
-            Math.cos(a) * 0.05,
-            trunkH * 0.6 + k * 0.1,
-            Math.sin(a) * 0.05
-          );
+          const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.035, len, 5), trunkMat);
+          branch.position.set(Math.cos(a) * 0.05, trunkH * 0.6 + k * 0.1, Math.sin(a) * 0.05);
           branch.rotation.z = 0.6 * (Math.random() < 0.5 ? 1 : -1);
           branch.rotation.y = a;
           branch.castShadow = true;
           g.add(branch);
         }
 
-        /* Снег на ветвях */
         const cap = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 6), snowBushMat);
         cap.position.y = trunkH + 0.05;
         cap.scale.set(1, 0.5, 1);
@@ -917,12 +894,8 @@ function createDecorations() {
         scene.add(g);
         mapObjects.push(g);
       } else {
-        /* Ледяной кристалл */
         const s = 0.3 + Math.random() * 0.4;
-        const crystal = new THREE.Mesh(
-          new THREE.OctahedronGeometry(s, 0),
-          iceMat
-        );
+        const crystal = new THREE.Mesh(new THREE.OctahedronGeometry(s, 0), iceMat);
         crystal.position.set(x, s * 0.9, z);
         crystal.scale.set(0.7, 1.4, 0.7);
         crystal.rotation.set(Math.random(), Math.random(), Math.random());
@@ -930,15 +903,10 @@ function createDecorations() {
         scene.add(crystal);
         mapObjects.push(crystal);
 
-        /* Пара мелких рядом */
         for (let k = 0; k < 2; k++) {
           const s2 = s * (0.4 + Math.random() * 0.3);
           const c2 = new THREE.Mesh(new THREE.OctahedronGeometry(s2, 0), iceMat);
-          c2.position.set(
-            x + (Math.random() - 0.5) * 0.5,
-            s2 * 0.9,
-            z + (Math.random() - 0.5) * 0.5
-          );
+          c2.position.set(x + (Math.random() - 0.5) * 0.5, s2 * 0.9, z + (Math.random() - 0.5) * 0.5);
           c2.scale.set(0.7, 1.4, 0.7);
           c2.rotation.set(Math.random(), Math.random(), Math.random());
           c2.castShadow = true;
@@ -947,7 +915,6 @@ function createDecorations() {
         }
       }
     } else {
-      /* Летний декор (как было) */
       if (roll < 0.55) {
         const s = 0.15 + Math.random() * 0.3;
         const m = new THREE.Mesh(new THREE.IcosahedronGeometry(s, 0), rockMat);
@@ -992,7 +959,6 @@ function createSpawnPortal() {
   const top = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.4, 0.8), archMat);
   top.position.set(0, 3.3, 0); top.castShadow = true; group.add(top);
 
-  /* Сосульки зимой */
   if (isWinter) {
     for (let i = 0; i < 6; i++) {
       const len = 0.15 + Math.random() * 0.25;
@@ -1056,7 +1022,6 @@ function createCastle() {
   gate.castShadow = true;
   group.add(gate);
 
-  /* Кристалл — красный в летнем, голубой в зимнем */
   const gemColor = isWinter ? 0x60c8ff : 0xff3040;
   const gemEmissive = isWinter ? 0x40a8e0 : 0xff2030;
   const gem = new THREE.Mesh(
@@ -1084,7 +1049,6 @@ function createCastle() {
     cap.castShadow = true;
     group.add(cap);
 
-    /* Снежная шапка поверх конуса зимой */
     if (isWinter) {
       const snowCap = new THREE.Mesh(
         new THREE.ConeGeometry(0.55, 0.4, 10),
@@ -1096,7 +1060,6 @@ function createCastle() {
     }
   });
 
-  /* Снежные карнизы зимой */
   if (isWinter) {
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * Math.PI * 2;
@@ -1403,7 +1366,6 @@ class Tower {
     emblem.rotation.y = -0.35;
     this.mesh.add(emblem);
 
-    /* Турель */
     this.turret.position.y = 2.35;
     this.mesh.add(this.turret);
 
